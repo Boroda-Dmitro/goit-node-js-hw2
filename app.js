@@ -29,3 +29,7 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+
+
+// META_PASSWORD=Pepper12345
+// BASE_URL=http://localhost:3000
