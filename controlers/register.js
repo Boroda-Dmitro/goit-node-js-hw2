@@ -3,12 +3,13 @@ const { User } = require("../models");
 const gravatar = require("gravatar");
 const { HttpError, ctrlWrapper, sendMail } = require("../helpers");
 const { nanoid } = require("nanoid");
+const jwt = require("jsonwebtoken");
 
-const {BASE_URL} = process.env
+const {BASE_URL, SECRET_KEY} = process.env
 
 const resisterUser = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
+  let user = await User.findOne({ email });
 
   if (user) {
     throw HttpError(409, "Email already in use");
@@ -18,12 +19,14 @@ const resisterUser = async (req, res) => {
   const avatarURL = await gravatar.url(email);
   const verificationToken = nanoid();
 
-  const newUser = await User.create({
+ await User.create({
     ...req.body,
     password: hashPassword,
     avatarURL,
     verificationToken,
   });
+
+  user = await User.findOne({ email });
 
   const verifyEmail = {
     to: email,
@@ -33,11 +36,19 @@ const resisterUser = async (req, res) => {
 
   await sendMail(verifyEmail)
 
+  const payload = {
+    id: user._id,
+  };
+
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
+
+  await User.findByIdAndUpdate(user._id, { token });
+
   res.status(201).json({
-    email: newUser.email,
-    subscription: newUser.subscription,
-    avatarURL,
+    token,
+    user: { email: user.email, subscription: user.subscription, avatarURL, },
   });
+
 };
 
 module.exports = ctrlWrapper(resisterUser);
