@@ -7,6 +7,10 @@ const validSubscriptions = ["starter", "pro", "business"];
 
 const userSchema = new Schema(
   {
+    name: {
+      type: String,
+      required: [true, "Set name for user"],
+    },
     password: {
       type: String,
       required: [true, "Set password for user"],
@@ -43,6 +47,7 @@ const User = model("user", userSchema);
 
 const registerSchema = Joi.object({
   password: Joi.string().required(),
+  name: Joi.string(),
   email: Joi.string().pattern(emailRegex).required(),
   subscription: Joi.string().valid(...validSubscriptions),
 });

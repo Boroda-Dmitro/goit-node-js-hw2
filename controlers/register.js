@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const {BASE_URL, SECRET_KEY} = process.env
 
 const resisterUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
   let user = await User.findOne({ email });
 
   if (user) {
@@ -46,7 +46,7 @@ const resisterUser = async (req, res) => {
 
   res.status(201).json({
     token,
-    user: { email: user.email, subscription: user.subscription, avatarURL, },
+    user: { name, email: user.email, subscription: user.subscription, avatarURL, },
   });
 
 };
