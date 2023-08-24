@@ -1,9 +1,9 @@
 const { ctrlWrapper } = require("../helpers");
 
 const getCurrentUser = async (req, res) => {
-  const { email, subscription, avatarURL } = req.user;
+  const { name, email, subscription, avatarURL } = req.user;
 
-  res.json({ email, subscription, avatarURL });
+  res.json({ name, email, subscription, avatarURL });
 };
 
 module.exports = ctrlWrapper(getCurrentUser);
