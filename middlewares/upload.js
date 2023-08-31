@@ -33,10 +33,8 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "avatars",
-    allowedFormats: ["jpg", "png"],
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    },
+    allowed_formats: ["jpg", "png"],
+    public_id: (req, file) => file.originalname, 
   },
 });
 
